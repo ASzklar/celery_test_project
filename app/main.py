@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from celery.result import AsyncResult
-from tasks import add, multiply, slow_operation
+from app.tasks import add, multiply, slow_operation
 import time
 import multiprocessing
 import os

@@ -1,1 +1,1 @@
-from tasks import celery as celery_app
+from app.tasks import celery as celery_app
