@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from celery.result import AsyncResult
 from tasks import add, multiply, slow_operation
 import time
+import multiprocessing
+import os
 
 app = FastAPI()
 
@@ -34,6 +36,15 @@ async def slow_task(seconds: int):
     task = slow_operation.apply_async(args=[seconds])
     return {"task_id": task.id, "message": f"Tarea lenta ({seconds}s) en cola"}
 
+# Inicia Celery en un proceso aparte
+def start_celery_worker():
+    from celery import Celery
+    celery_app = Celery('celery_test_project', broker=os.getenv("REDIS_URL"))
+    celery_app.start()
+
+# Inicia el proceso para Celery y luego inicia FastAPI
 if __name__ == "__main__":
+    p = multiprocessing.Process(target=start_celery_worker)
+    p.start()
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

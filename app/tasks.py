@@ -1,10 +1,13 @@
-from celery import Celery
 import os
+from celery import Celery
+
+broker_url = os.environ.get("CELERY_BROKER_URL")
+result_backend = os.environ.get("CELERY_RESULT_BACKEND")
 
 celery = Celery(
     "tasks",
-    broker=os.environ.get("CELERY_BROKER_URL"),
-    backend=os.environ.get("CELERY_RESULT_BACKEND")
+    broker=broker_url,
+    backend=result_backend
 )
 
 @celery.task
