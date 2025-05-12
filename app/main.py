@@ -16,10 +16,15 @@ async def add_task(x: int, y: int):
 @app.get("/task_status/{task_id}")
 async def task_status(task_id: str):
     task = AsyncResult(task_id)
+    
     if task.state == "PENDING":
         return {"task_id": task.id, "state": "Pendiente"}
     elif task.state == "SUCCESS":
         return {"task_id": task.id, "state": "Completada", "result": task.result}
+    elif task.state == "FAILURE":
+        return {"task_id": task.id, "state": "Fallida", "result": str(task.result)}
+    elif task.state == "RETRY":
+        return {"task_id": task.id, "state": "Reintentando"}
     else:
         return {"task_id": task.id, "state": task.state}
 
