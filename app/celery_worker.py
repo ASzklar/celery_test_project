@@ -1,3 +1,3 @@
-from app.celery import celery
+from app.tasks import celery
 
-celery.worker_main(["worker", "--loglevel=info"])
+celery.worker_main()
