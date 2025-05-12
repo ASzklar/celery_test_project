@@ -10,6 +10,6 @@ celery_app = Celery(
     backend=result_backend
 )
 
-celery_app.config_from_object("celeryconfig")
+celery_app.config_from_object("app.celeryconfig")
 
 celery_app.autodiscover_tasks(["app.tasks"])
