@@ -4,12 +4,13 @@ from app.tasks import add, multiply, slow_operation
 import time
 import multiprocessing
 import os
+import app.celery
 
 app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Hola mundo"}
 
 @app.get("/add_task/{x}/{y}")
 async def add_task(x: int, y: int):
