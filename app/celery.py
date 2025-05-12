@@ -14,7 +14,8 @@ celery_app.config_from_object("app.celeryconfig")
 
 celery_app.conf.update(
     redis_backend_use_ssl={
-        "ssl_cert_reqs": "CERT_NONE"
+        "ssl_cert_reqs": "CERT_NONE",
+        "ssl_check_hostname": False
     }
 )
 
