@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from celery.result import AsyncResult
 from app.tasks import add, multiply, slow_operation
+from app.websockets import get_task_status
 
 app = FastAPI()
 
@@ -37,3 +38,15 @@ async def multiply_task(x: int, y: int):
 async def slow_task(seconds: int):
     task = slow_operation.apply_async(args=[seconds])
     return {"task_id": task.id, "message": f"Tarea lenta ({seconds}s) en cola"}
+
+# WebSocket endpoint para mantener la conexión abierta
+@app.websocket("/ws/{task_id}")
+async def websocket_endpoint(websocket: WebSocket, task_id: str):
+    await websocket.accept()  # Aceptamos la conexión WebSocket
+    try:
+        while True:
+            # Obtener el estado de la tarea y enviarlo al cliente
+            status = await get_task_status(task_id)
+            await websocket.send_text(f"Estado de la tarea {task_id}: {status}")
+    except WebSocketDisconnect:
+        print(f"Tarea {task_id} desconectada")
